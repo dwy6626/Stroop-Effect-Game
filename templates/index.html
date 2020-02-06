@@ -1,0 +1,11 @@
+{% extends "template.html" %}
+{% block title %}主頁面{% endblock title%}
+
+{% block content %}
+<h1>Stroop Effect 互動實驗</h1>
+    <p>重現 J. Ridley Stroop 於 Studies of Interference in Serial Verbal Reactions 所發表的實驗</p>
+    <div class="middle">
+        <a class="pure-button custom-restricted-width" href="{{ url_for('test') }}">試玩</a>
+        <a class="pure-button custom-restricted-width" href="{{ url_for('experiment') }}">正式開始</a>
+    </div>
+{% endblock %}

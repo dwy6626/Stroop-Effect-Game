@@ -1,0 +1,14 @@
+div.middle {
+    margin: 0 auto;
+    text-align: center;
+}
+
+h1, h2, h3, p {
+    text-align: center;
+}
+
+.custom-restricted-width {
+    width: 10em;
+    margin-left: auto;
+    margin-right: auto;
+}

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/pure-min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+        <title>{% block title%}{% endblock title%}</title>
+    </head>
+    <body>
+        {% block content %}
+        {% endblock %}
+    </body>
+</html>
