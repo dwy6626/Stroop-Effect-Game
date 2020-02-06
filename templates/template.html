@@ -4,9 +4,9 @@
         <meta charset="utf-8">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/pure-min.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
-        <title>{% block title%}{% endblock title%}</title>
+        <title>{% block title %}{% endblock %}</title>
     </head>
-    <body>
+    <body style="{% block style %}{% endblock %}">
         {% block content %}
         {% endblock %}
     </body>
