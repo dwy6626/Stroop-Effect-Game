@@ -19,7 +19,7 @@ window.addEventListener("keydown", function (event) {
         return; // Do nothing if the event was already processed
     }
 
-    if (event.key in keyMap) getNext(event.key);
+    if (event.key in keyMap) updateExperiment(event.key);
     else if (["Esc", "Escape"].includes(event.key)) window.location.href = '/';
 
     // Cancel the default action to avoid it being handled twice
@@ -32,48 +32,73 @@ function getRandomInt(x){
 }
 
 
-function getNext(keyIn) {
+function updateExperiment (keyIn) {
     const keyTime = Date.now();
     const prevText = displayContent.textContent;
-    const prevColor = displayContent.style.color;
 
     // judgement
-    if (lastTimeStamp) {
-        // exclude 1st time
-        if (keyMap[keyIn] === prevText) {
-            console.log("pass");
+    if (keyMap[keyIn] === prevText) {
+        console.log("pass");
 
-        } else {
-            console.log("fail");
-        }
-
-        // record time difference
-        console.log(`TD: ${keyTime - lastTimeStamp}`);
-
-        let httpRequest = new XMLHttpRequest();
-        httpRequest.overrideMimeType('text/xml');
-        httpRequest.open('POST', '/', true);
-        httpRequest.setRequestHeader('Content-Type', 'text/plain');
-        httpRequest.send(`${keyTime - lastTimeStamp}`);
+    } else {
+        console.log("fail");
     }
 
-    // conflict text
-    let text, color;
-    do {
-        let x1 = 0, x2 = 0;
+    // record time difference
+    console.log(`TD: ${keyTime - lastTimeStamp}`);
+
+    let httpRequest = new XMLHttpRequest();
+    httpRequest.overrideMimeType('text/xml');
+    httpRequest.open('POST', '/', true);
+    httpRequest.setRequestHeader('Content-Type', 'text/plain');
+    httpRequest.send(`${keyTime - lastTimeStamp}`);
+
+    // update displayed text
+    updateNext();
+}
+
+
+function isTest() {
+    return window.location.pathname.includes('test');
+}
+
+
+function updateNext () {
+    const prevText = displayContent.textContent;
+
+    if (isTest()) {
+        // change text
+        let text, x;
         do {
-            x1 = getRandomInt(3);
-            x2 = getRandomInt(3);
-        } while (x1 === x2);
+            x = getRandomInt(3);
+            text = experimentText[x];
+        } while (prevText === text);
 
-        text = experimentText[x1];
-        color = experimentText[x2].toLowerCase();
-    } while (
-        prevText === text || prevColor === color
-    );
+        // modify displayed text
+        displayContent.textContent = text;
+    } else {
+        const prevColor = displayContent.style.color;
 
-    // modify displayed text
-    displayContent.textContent = text;
-    displayContent.style.color = color;
+        // conflict text
+        let text, color;
+        do {
+            let x1 = 0, x2 = 0;
+            do {
+                x1 = getRandomInt(3);
+                x2 = getRandomInt(3);
+            } while (x1 === x2);
+
+            text = experimentText[x1];
+            color = experimentText[x2].toLowerCase();
+        } while (prevText === text || prevColor === color);
+
+        // modify displayed text
+        displayContent.textContent = text;
+        displayContent.style.color = color;
+    }
+
     lastTimeStamp = Date.now();
 }
+
+
+window.onload = updateNext;

@@ -4,4 +4,4 @@ import toml
 CONFIG_FILE = './config.toml'
 
 
-CONFIG = toml.loads(CONFIG_FILE)
+CONFIG = toml.load(CONFIG_FILE)
