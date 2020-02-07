@@ -1,1 +1,14 @@
 [Setting]
+test = 6
+experiment = 30
+
+[Wording]
+title = "Stroop Effect 互動實驗"
+description = "重現 J. Ridley Stroop 於 Studies of Interference in Serial Verbal Reactions 所發表的實驗"
+index = "主頁面"
+test = "測試局"
+results = "實驗結果"
+experiment = "正式局"
+back_button = "回到主畫面"
+test_button = "試玩"
+exp_button = "正式開始"

@@ -5,12 +5,9 @@ from src import data, config
 app = Flask(__name__)
 
 
-@app.route('/', methods = ['GET', 'POST'])
+@app.route('/')
 def index():
-    if request.method == 'POST':
-        print(request.get_data())
-    # else:
-    return render_template("index.html")
+    return render_template("index.html", **config.CONFIG['Wording'])
 
 
 @app.route('/test')
@@ -23,12 +20,24 @@ def experiment():
     return get_experiment(request.path)
 
 
+@app.route('/results')
+def results():
+    return render_template("results.html", **config.CONFIG['Wording'], show_results="")
+
+
+@app.route('/api/record', methods = ['POST'])
+def record():
+    return "true"
+
+
+@app.route('/api/config', methods = ['POST'])
+def get_config():
+    exp_type = request.get_data().decode()
+    return str(config.CONFIG['Setting'][exp_type[1:]])
+
+
 def get_experiment(uri):
-    if uri[1:] == 'test':
-        title = "試玩局"
-    else:
-        title = "正式局"
-    return render_template("experiment.html", exp_title=title)
+    return render_template("experiment.html", exp_title=config.CONFIG['Wording'][uri[1:]])
 
 
 if __name__ == '__main__':

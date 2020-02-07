@@ -1,0 +1,10 @@
+{% extends "template.html" %}
+{% block title %}{{ results }}{% endblock title%}
+
+{% block content %}
+<h1>{{ results }}</h1>
+    <p>{{ show_results }}</p>
+    <div class="middle">
+        <a class="pure-button custom-restricted-width" href="{{ url_for('index') }}">{{ back_button }}</a>
+    </div>
+{% endblock %}

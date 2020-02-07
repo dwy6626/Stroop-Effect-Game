@@ -1,5 +1,7 @@
 const experimentText = ["RED", "GREEN", "BLUE"];
 const displayContent = document.querySelector("div .experiment-texts");
+const dataAPI = '/api/record';
+const configAPI = '/api/config';
 
 
 // key mapping
@@ -10,8 +12,10 @@ const keyMap = {
 };
 
 
-// global time record in frontend
+// global variables
 let lastTimeStamp;
+let count = 0;
+let maxShow = 10;  // temperate values, will be modified from backend
 
 
 window.addEventListener("keydown", function (event) {
@@ -49,7 +53,7 @@ function updateExperiment (keyIn) {
 
     let httpRequest = new XMLHttpRequest();
     httpRequest.overrideMimeType('text/xml');
-    httpRequest.open('POST', '/', true);
+    httpRequest.open('POST', dataAPI, true);
     httpRequest.setRequestHeader('Content-Type', 'text/plain');
     httpRequest.send(`${keyTime - lastTimeStamp}`);
 
@@ -64,6 +68,11 @@ function isTest() {
 
 
 function updateNext () {
+    // break?
+    if (count === maxShow)
+        showResult();
+    else count ++;
+
     const prevText = displayContent.textContent;
 
     if (isTest()) {
@@ -101,4 +110,27 @@ function updateNext () {
 }
 
 
-window.onload = updateNext;
+window.onload = function () {
+    let httpRequest = new XMLHttpRequest();
+    httpRequest.overrideMimeType('text/xml');
+    httpRequest.open('POST', configAPI, true);
+    httpRequest.setRequestHeader('Content-Type', 'text/plain');
+    httpRequest.onreadystatechange = alertContents;
+    httpRequest.send(document.location.pathname);
+
+    function alertContents() {
+        if (httpRequest.readyState === XMLHttpRequest.DONE) {
+            if (httpRequest.status === 200) {
+                maxShow = parseInt(httpRequest.responseText, 10)
+            } else {
+                alert('There was a problem with the request, please reload the page.');
+            }
+        }
+    }
+    updateNext();
+};
+
+
+function showResult() {
+    window.location.href = '/results';
+}
