@@ -34,7 +34,7 @@ def filter_results(arr):
     print(arr)
     arr = np.array(arr)
     if config.CONFIG['Setting']['filter'] and len(arr) >= config.CONFIG['Setting']['min_data_filter']:
-        a = config.CONFIG['Setting']['outlier_over_variance']
+        a = config.CONFIG['Setting']['outlier_over_std']
         std = np.std(arr)
         mean = np.mean(arr)
         remain = arr[np.abs(arr - mean) < std * a]

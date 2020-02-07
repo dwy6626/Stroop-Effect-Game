@@ -73,6 +73,18 @@ div.vertical-middle {
     }
 }
 
+@media screen and (min-width: 1400px) {
+    div.experiment-texts {
+        padding: 84px;
+    }
+}
+
+@media screen and (min-width: 1600px) {
+    div.experiment-texts {
+        font-size: 256px;
+    }
+}
+
 @media screen and (max-width: 720px) {
     div.experiment-texts {
         padding: 43px;
