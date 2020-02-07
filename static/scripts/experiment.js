@@ -14,7 +14,8 @@ const keyMap = {
 
 // global variables
 let lastTimeStamp;
-let count = 0;
+let countConflict = 0;
+let countNormal = 0;
 let maxShow = 10;  // temperate values, will be modified from backend
 
 
@@ -62,30 +63,27 @@ function updateExperiment (keyIn) {
 }
 
 
-function isTest() {
-    return window.location.pathname.includes('test');
-}
-
-
 function updateNext () {
     // break?
-    if (count === maxShow)
-        showResult();
-    else count ++;
-
     const prevText = displayContent.textContent;
 
-    if (isTest()) {
-        // change text
-        let text, x;
-        do {
-            x = getRandomInt(3);
-            text = experimentText[x];
-        } while (prevText === text);
-
-        // modify displayed text
-        displayContent.textContent = text;
+    // conflict or normal
+    let conflict;
+    if (countConflict < maxShow / 2) {
+        if (countNormal < maxShow / 2) {
+            conflict = getRandomInt(2) === 1;
+        } else {
+            conflict = true;
+        }
+    } else if (countNormal < maxShow / 2) {
+        conflict = false;
     } else {
+        showResult();
+        return;
+    }
+
+    if (conflict) {
+        countConflict ++;
         const prevColor = displayContent.style.color;
 
         // conflict text
@@ -104,6 +102,19 @@ function updateNext () {
         // modify displayed text
         displayContent.textContent = text;
         displayContent.style.color = color;
+    } else {
+        countNormal ++;
+
+        // change text
+        let text, x;
+        do {
+            x = getRandomInt(3);
+            text = experimentText[x];
+        } while (prevText === text);
+
+        // modify displayed text
+        displayContent.textContent = text;
+        displayContent.style.color = 'white';
     }
 
     lastTimeStamp = Date.now();
