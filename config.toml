@@ -1,10 +1,9 @@
 [Setting]
 test = 6
 experiment = 40
-max_retest = 10
+filter = true
 outlier_over_variance = 1
 min_data_filter = 10
-filter = true
 
 [Wording]
 title = "Stroop Effect 互動實驗"

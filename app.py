@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from src import data, config
 
 
@@ -31,10 +31,9 @@ def record():
     return "true"
 
 
-@app.route('/api/config', methods = ['POST'])
+@app.route('/api/config')
 def get_config():
-    exp_type = request.get_data().decode()
-    return str(config.CONFIG['Setting'][exp_type[1:]])
+    return jsonify(config.CONFIG["Setting"])
 
 
 def get_experiment(path):

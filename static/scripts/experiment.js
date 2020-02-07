@@ -8,7 +8,9 @@ const configAPI = '/api/config';
 let lastTimeStamp;
 let countConflict = 0;
 let countNormal = 0;
-let maxShow = 10;  // temperate values, will be modified from backend
+
+// temperate values, will be modified from backend
+let maxShow = 10;
 
 
 window.addEventListener("keydown", function (event) {
@@ -47,23 +49,26 @@ function getRandomInt(x){
 function updateExperiment (key) {
     const keyTime = Date.now();
     const prevText = displayContent.textContent;
+    const timeDifference = keyTime - lastTimeStamp;
 
     // judgement
     if (key === prevText) {
         console.log("pass");
 
     } else {
+        // test until success
         console.log("fail");
+        return
     }
 
     // record time difference
-    console.log(`TD: ${keyTime - lastTimeStamp}`);
+    console.log(`TD: ${timeDifference}`);
 
     let httpRequest = new XMLHttpRequest();
     httpRequest.overrideMimeType('text/xml');
     httpRequest.open('POST', dataAPI, true);
     httpRequest.setRequestHeader('Content-Type', 'text/plain');
-    httpRequest.send(`${displayContent.style.color} ${keyTime - lastTimeStamp}`);
+    httpRequest.send(`${displayContent.style.color} ${timeDifference}`);
 
     // update displayed text
     updateNext();
@@ -131,7 +136,7 @@ function updateNext () {
 window.onload = function () {
     let httpRequest = new XMLHttpRequest();
     httpRequest.overrideMimeType('text/xml');
-    httpRequest.open('POST', configAPI, true);
+    httpRequest.open('GET', configAPI, true);
     httpRequest.setRequestHeader('Content-Type', 'text/plain');
     httpRequest.onreadystatechange = alertContents;
     httpRequest.send(document.location.pathname);
@@ -139,7 +144,10 @@ window.onload = function () {
     function alertContents() {
         if (httpRequest.readyState === XMLHttpRequest.DONE) {
             if (httpRequest.status === 200) {
-                maxShow = parseInt(httpRequest.responseText, 10)
+                const res = JSON.parse(httpRequest.response);
+                maxShow = parseInt(
+                    res[document.location.pathname.substr(1)], 10
+                );
             } else {
                 alert('There was a problem with the request, please reload the page.');
             }
