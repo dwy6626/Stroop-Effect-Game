@@ -1,8 +1,9 @@
 # Stroop Effect Game
 
+(In traditional Chinese)\
 Mimicking experiment I in studies of J. Ridley Stroop, published in *Studies of Interference in Serial Verbal Reactions*. 
-(In traditional Chinese)
 
+![](./image/preview.gif)
 ![](./image/preview.png)
 
 Example of experiment result:
@@ -12,7 +13,7 @@ Example of experiment result:
 
 ## Environment Setup
 
-This app is developed under Python 3, tested with Google Chrome, macOS 10.15.
+This app is developed under Python 3, tested with Google Chrome 80.0.3987.87, macOS 10.15.
 
 ### Install requirements
 
@@ -20,11 +21,11 @@ This app is developed under Python 3, tested with Google Chrome, macOS 10.15.
 pip install -r requirements.txt
 ```
 
-### customize
+### Customization
 
 modify `config.toml`
 
-- `test': how many runs in pre-testing
+- `test`: how many runs in pre-testing
 - `experiment`: how many runs in formal testing
 - `filter`: discard outliers (in measured time difference)
 - `outlier_over_std`: tolerance for data, deviating from mean
@@ -33,11 +34,11 @@ modify `config.toml`
 
 ## Usage
 
-### run the application
+### Run the application
 
 ```bash
 flask run
 ```
 
-### application spec
+### Spec
 ![](./image/stroop-effect-game-spec.jpg)
