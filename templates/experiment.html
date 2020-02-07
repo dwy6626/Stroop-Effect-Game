@@ -1,11 +1,13 @@
 {% extends "template.html" %}
 {% block title %}{{ exp_title }}{% endblock title%}
-{% block style %} background-color:black; {% endblock %}
 
 {% block content %}
 <div class="vertical-middle">
     <div class="experiment-texts">
-        <script src={{ url_for('static', filename="scripts/experiment.js") }}></script>
     </div>
+    <span class="circle blue"></span><br>
+    <span class="circle green"></span>
+    <span class="circle red"></span>
 </div>
+<script src={{ url_for('static', filename="scripts/experiment.js") }}></script>
 {% endblock %}

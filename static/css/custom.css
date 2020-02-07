@@ -14,17 +14,68 @@ h1, h2, h3, p {
 }
 
 div.experiment-texts {
-    font-size: 15vw;
+    background: black;
+    font-size: 17vw;
     font-weight:bold;
     color: white;
+    padding: 6vw;
+    margin-bottom: 20px;
 }
 
 div.vertical-middle {
+    width: 100%;
     margin: 0 auto;
     text-align: center;
     position: absolute;
-    top: 50%;
+    /*top: 50%;*/
     left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
+    /*transform: translate(-50%, -50%);*/
+}
+
+.circle {
+    height: 16vw;
+    width: 16vw;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.circle.red {
+    background-color: red;
+    transform: translateX(1vw);
+}
+
+.circle.red:hover {
+    background-color: #ff4d4d;
+}
+
+.circle.blue {
+    background-color: blue;
+}
+
+.circle.blue:hover {
+    background-color: #4d4dff;
+}
+
+.circle.green {
+    background-color: green;
+    transform: translateX(-1vw);
+}
+
+.circle.green:hover {
+    background-color: #298f29;
+}
+
+@media screen and (min-width: 1200px) {
+    .circle {
+        height: 192px;
+        width: 192px;
+    }
+}
+
+@media screen and (max-width: 720px) {
+    div.experiment-texts {
+        padding: 43px;
+        font-size: 122px;
+    }
 }

@@ -4,14 +4,6 @@ const dataAPI = '/api/record';
 const configAPI = '/api/config';
 
 
-// key mapping
-const keyMap = {
-    a: experimentText[0],
-    s: experimentText[1],
-    d: experimentText[2],
-};
-
-
 // global variables
 let lastTimeStamp;
 let countConflict = 0;
@@ -24,12 +16,27 @@ window.addEventListener("keydown", function (event) {
         return; // Do nothing if the event was already processed
     }
 
-    if (event.key in keyMap) updateExperiment(event.key);
-    else if (["Esc", "Escape"].includes(event.key)) window.location.href = '/';
+    // if (event.key in keyMap) updateExperiment(event.key);
+    if (["Esc", "Escape"].includes(event.key)) window.location.href = '/';
 
     // Cancel the default action to avoid it being handled twice
     event.preventDefault();
-}, true);
+});
+
+
+document.querySelector("span.circle.red").addEventListener("click", function () {
+    updateExperiment(experimentText[0])
+});
+
+
+document.querySelector("span.circle.green").addEventListener("click", function () {
+    updateExperiment(experimentText[1])
+});
+
+
+document.querySelector("span.circle.blue").addEventListener("click", function () {
+    updateExperiment(experimentText[2])
+});
 
 
 function getRandomInt(x){
@@ -37,12 +44,12 @@ function getRandomInt(x){
 }
 
 
-function updateExperiment (keyIn) {
+function updateExperiment (key) {
     const keyTime = Date.now();
     const prevText = displayContent.textContent;
 
     // judgement
-    if (keyMap[keyIn] === prevText) {
+    if (key === prevText) {
         console.log("pass");
 
     } else {
