@@ -3,7 +3,11 @@
 
 {% block content %}
 <h1>{{ results }}</h1>
-    <p>{{ show_results }}</p>
+    <p>
+        {% for line in show_results %}
+            {{line}}<br>
+        {% endfor %}
+    </p>
     <div class="middle">
         <a class="pure-button custom-restricted-width" href="{{ url_for('index') }}">{{ back_button }}</a>
     </div>

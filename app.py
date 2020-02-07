@@ -22,11 +22,12 @@ def experiment():
 
 @app.route('/results')
 def results():
-    return render_template("results.html", **config.CONFIG['Wording'], show_results="")
+    return render_template("results.html", **config.CONFIG['Wording'], show_results=data.get_results())
 
 
 @app.route('/api/record', methods = ['POST'])
 def record():
+    data.update(request.get_data())
     return "true"
 
 
@@ -36,8 +37,9 @@ def get_config():
     return str(config.CONFIG['Setting'][exp_type[1:]])
 
 
-def get_experiment(uri):
-    return render_template("experiment.html", exp_title=config.CONFIG['Wording'][uri[1:]])
+def get_experiment(path):
+    data.clear()
+    return render_template("experiment.html", exp_title=config.CONFIG['Wording'][path[1:]])
 
 
 if __name__ == '__main__':

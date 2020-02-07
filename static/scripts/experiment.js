@@ -63,7 +63,7 @@ function updateExperiment (key) {
     httpRequest.overrideMimeType('text/xml');
     httpRequest.open('POST', dataAPI, true);
     httpRequest.setRequestHeader('Content-Type', 'text/plain');
-    httpRequest.send(`${keyTime - lastTimeStamp}`);
+    httpRequest.send(`${displayContent.style.color} ${keyTime - lastTimeStamp}`);
 
     // update displayed text
     updateNext();
