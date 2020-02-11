@@ -2,7 +2,7 @@
 test = 6
 experiment = 40
 filter = true
-outlier_over_std = 1
+outlier_over_std = 3
 min_data_filter = 10
 
 [Wording]

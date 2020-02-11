@@ -1,6 +1,9 @@
-div.middle {
-    margin: 0 auto;
-    text-align: center;
+h1 {
+    font-size: 5em
+}
+
+p, .pure-button {
+    font-size: 2em
 }
 
 h1, h2, h3, p {
@@ -22,15 +25,23 @@ div.experiment-texts {
     margin-bottom: 20px;
 }
 
+div.middle {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
 div.vertical-middle {
     width: 100%;
     margin: 0 auto;
     text-align: center;
     position: absolute;
-    /*top: 50%;*/
+    top: 30%;
     left: 50%;
-    transform: translateX(-50%);
-    /*transform: translate(-50%, -50%);*/
+    transform: translate(-50%, -50%);
 }
 
 .circle {
