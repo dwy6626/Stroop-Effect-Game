@@ -1,9 +1,14 @@
 h1 {
-    font-size: 5em
+    font-size: 5em;
+    margin-top: 0;
 }
 
 p, .pure-button {
-    font-size: 2em
+    font-size: 2em;
+}
+
+.more-bottom {
+    margin-bottom: 2em;
 }
 
 div.small {
