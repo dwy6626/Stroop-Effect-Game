@@ -9,9 +9,16 @@ min_data_filter = 10
 title = "Stroop Effect 互動實驗"
 description = "重現 J. Ridley Stroop 於 Studies of Interference in Serial Verbal Reactions 所發表的實驗"
 index = "主頁面"
+help = "規則說明"
 test = "測試局"
 results = "實驗結果"
 experiment = "正式局"
 back_button = "回到主畫面"
 test_button = "試玩"
 exp_button = "正式開始"
+help_message = """
+這裡是說明文字
+第一行
+第二行
+第三行
+"""

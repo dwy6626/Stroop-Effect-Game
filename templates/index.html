@@ -6,6 +6,7 @@
     <h1>{{ title }}</h1>
     <p>{{ description }}</p>
     <div class="middle">
+        <a class="pure-button custom-restricted-width" href="{{ url_for('help') }}">{{ help }}</a>
         <a class="pure-button custom-restricted-width" href="{{ url_for('test') }}">{{ test_button }}</a>
         <a class="pure-button custom-restricted-width" href="{{ url_for('experiment') }}">{{ exp_button }}</a>
     </div>

@@ -10,6 +10,11 @@ def index():
     return render_template("index.html", **config.CONFIG['Wording'])
 
 
+@app.route('/help')
+def help():
+    return render_template("help.html", **config.CONFIG['Wording'])
+
+
 @app.route('/test')
 def test():
     return get_experiment(request.path)

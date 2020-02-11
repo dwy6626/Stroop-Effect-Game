@@ -1,0 +1,29 @@
+{% extends "template.html" %}
+{% block title %}{{ help }}{% endblock title%}
+
+{% block content %}
+<div class="middle small">
+    <h1>{{ help }}</h1>
+    <div class="pure-g">
+        <div class="pure-u-1-1">
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/TInRX_sIFGQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+    <div class="pure-g">
+        <div class="pure-u-1-1">
+            <div class="smaller-text">
+                {% set help_lines = help_message.split('\n')[:-1] %}
+                <p>{% for l in help_lines %}
+                        {{ l }}<br>
+                    {% endfor %}
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="middle">
+        <a class="pure-button custom-restricted-width" href="{{ url_for('index') }}">{{ back_button }}</a>
+    </div>
+</div>
+{% endblock %}
