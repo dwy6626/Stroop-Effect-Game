@@ -15,6 +15,17 @@ div.small {
     max-width: 900px;
 }
 
+div.block-over {
+    font-size: 7vw;
+    font-weight: bold;
+    color: white;
+    position: absolute;
+    top: 11vw;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+}
+
 .video-container {
 	position: relative;
 	padding-bottom: 56.25%; /* 16:9 */
@@ -41,8 +52,8 @@ h1, h2, h3, p {
 div.experiment-texts {
     background: black;
     font-size: 17vw;
-    font-weight:bold;
-    color: white;
+    font-weight: bold;
+    color: black;
     padding: 6vw;
     margin-bottom: 20px;
 }
@@ -110,11 +121,17 @@ div.vertical-middle {
     div.experiment-texts {
         padding: 84px;
     }
+    div.block-over {
+        top: 154px;
+    }
 }
 
 @media screen and (min-width: 1600px) {
     div.experiment-texts {
         font-size: 256px;
+    }
+    div.block-over {
+        font-size: 112px;
     }
 }
 

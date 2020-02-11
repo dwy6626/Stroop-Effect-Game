@@ -8,6 +8,7 @@ const configAPI = '/api/config';
 let lastTimeStamp;
 let countConflict = 0;
 let countNormal = 0;
+let started = false
 
 // temperate values, will be modified from backend
 let maxShow = 10;
@@ -34,29 +35,33 @@ function getRandomInt(x){
 
 
 function updateExperiment (key) {
-    const keyTime = Date.now();
-    const prevText = displayContent.textContent;
-    const timeDifference = keyTime - lastTimeStamp;
-
-    // judgement
-    if (key === prevText) {
-        console.log("pass");
-
+    if (!started) {
+        started = true;
+        document.querySelector("div.block-over").textContent = ""
     } else {
-        // test until success
-        console.log("fail");
-        return
+        const keyTime = Date.now();
+        const prevText = displayContent.textContent;
+        const timeDifference = keyTime - lastTimeStamp;
+
+        // judgement
+        if (key === prevText) {
+            console.log("pass");
+
+        } else {
+            // test until success
+            console.log("fail");
+            return
+        }
+
+        // record time difference
+        console.log(`TD: ${timeDifference}`);
+
+        let httpRequest = new XMLHttpRequest();
+        httpRequest.overrideMimeType('text/xml');
+        httpRequest.open('POST', dataAPI, true);
+        httpRequest.setRequestHeader('Content-Type', 'text/plain');
+        httpRequest.send(`${displayContent.style.color} ${timeDifference}`);
     }
-
-    // record time difference
-    console.log(`TD: ${timeDifference}`);
-
-    let httpRequest = new XMLHttpRequest();
-    httpRequest.overrideMimeType('text/xml');
-    httpRequest.open('POST', dataAPI, true);
-    httpRequest.setRequestHeader('Content-Type', 'text/plain');
-    httpRequest.send(`${displayContent.style.color} ${timeDifference}`);
-
     // update displayed text
     updateNext();
 }
@@ -140,7 +145,6 @@ window.onload = function () {
             }
         }
     }
-    updateNext();
 };
 
 
