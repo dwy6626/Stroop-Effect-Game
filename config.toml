@@ -4,6 +4,7 @@ experiment = 40
 filter = true
 outlier_over_std = 3
 min_data_filter = 10
+output_file = 'output/record.csv'
 
 [Wording]
 title = "Stroop Effect 互動實驗"
@@ -16,6 +17,7 @@ experiment = "正式局"
 back_button = "回到主畫面"
 test_button = "試玩"
 exp_button = "正式開始"
+end_of_experiment = "實驗結束，謝謝您的參與，以下是這次的數據："
 help_message = """
 這裡是說明文字
 第一行

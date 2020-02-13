@@ -8,7 +8,7 @@ const configAPI = '/api/config';
 let lastTimeStamp;
 let countConflict = 0;
 let countNormal = 0;
-let started = false
+let started = false;
 
 // temperate values, will be modified from backend
 let maxShow = 10;
@@ -149,5 +149,12 @@ window.onload = function () {
 
 
 function showResult() {
-    window.location.href = '/results';
+    let httpRequest = new XMLHttpRequest();
+    httpRequest.overrideMimeType('text/xml');
+    httpRequest.open('POST', '/api/results', true);
+    httpRequest.setRequestHeader('Content-Type', 'text/plain');
+    httpRequest.send(window.location.pathname);
+    httpRequest.onreadystatechange = function () {
+        document.body.innerHTML = httpRequest.response
+    };
 }

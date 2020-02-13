@@ -25,9 +25,15 @@ def experiment():
     return get_experiment(request.path)
 
 
-@app.route('/results')
+@app.route('/api/results', methods = ['POST'])
 def results():
-    return render_template("results.html", **config.CONFIG['Wording'], show_results=data.get_results())
+    exp_results = data.get_results()
+    if 'experiment' in request.get_data().decode():
+        data.record_to_file(exp_results)
+    return render_template(
+        "results.html", **config.CONFIG['Wording'],
+        show_results=data.format_results(exp_results)
+    )
 
 
 @app.route('/api/record', methods = ['POST'])
