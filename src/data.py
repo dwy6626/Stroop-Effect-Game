@@ -22,7 +22,7 @@ TEMPLATE = "衝突文字平均：{:.0f} 毫秒\n" + \
 
 
 COLUMNS = [
-    '測驗時間日期', '時間差',
+    '測驗時間日期', '實驗類型', '時間差',
     '衝突文字平均', '衝突文字標準差', '一般文字平均', '一般文字標準差'
 ]
 
@@ -34,9 +34,9 @@ def date_format(dt):
 def update(res):
     res = res.decode()
     print(f'data received: {res}')
-    color, diff = res.split()
+    is_conflict, diff = res.split()
     diff = int(diff)
-    if color == 'white':
+    if is_conflict == 'false':
         NORMAL.append(diff)
     else:
         CONFLICT.append(diff)
@@ -65,7 +65,7 @@ def get_results():
     # no test results
     if normal.size == 0 or conflict.size == 0:
         return pd.Series(
-            [datetime.now(), 0, 0, 0, 0, 0], index=COLUMNS
+            [datetime.now(), 0, 0, 0, 0, 0, 0], index=COLUMNS
         )
 
     m1 = np.mean(conflict)
@@ -73,12 +73,15 @@ def get_results():
     m2 = np.mean(normal)
     s2 = np.std(normal)
 
-    return pd.Series([datetime.now(), m1 - m2, m1, s1, m2, s2], index=COLUMNS)
+    return pd.Series([
+        datetime.now(), config.CONFIG['Setting']['experiment_type'],
+        m1 - m2, m1, s1, m2, s2
+    ], index=COLUMNS)
 
 
 def format_results(results):
     return TEMPLATE.format(
-       results[COLUMNS[2]], results[COLUMNS[4]], results[COLUMNS[1]]
+       results[COLUMNS[3]], results[COLUMNS[5]], results[COLUMNS[2]]
     ).split('\n')
 
 

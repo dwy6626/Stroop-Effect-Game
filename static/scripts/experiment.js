@@ -5,6 +5,7 @@ const configAPI = '/api/config';
 
 
 // global variables
+let expType = 2;
 let lastTimeStamp;
 let countConflict = 0;
 let countNormal = 0;
@@ -37,10 +38,22 @@ function getRandomInt(x){
 function updateExperiment (key) {
     if (!started) {
         started = true;
-        document.querySelector("div.block-over").textContent = ""
+        displayContent.style.fontSize = '';
     } else {
+        let prevText;
+        let conflict;
         const keyTime = Date.now();
-        const prevText = displayContent.textContent;
+        if (expType === 2) {
+            conflict = displayContent.innerHTML.includes('span');
+            if (conflict) {
+                prevText = document.querySelector("span.block").style.backgroundColor.toUpperCase();
+            } else {
+                prevText = displayContent.style.color.toUpperCase();
+            }
+        } else {
+            conflict = displayContent.style.color === 'white';
+            prevText = displayContent.textContent;
+        }
         const timeDifference = keyTime - lastTimeStamp;
 
         // judgement
@@ -60,7 +73,7 @@ function updateExperiment (key) {
         httpRequest.overrideMimeType('text/xml');
         httpRequest.open('POST', dataAPI, true);
         httpRequest.setRequestHeader('Content-Type', 'text/plain');
-        httpRequest.send(`${displayContent.style.color} ${timeDifference}`);
+        httpRequest.send(`${conflict} ${timeDifference}`);
     }
     // update displayed text
     updateNext();
@@ -117,15 +130,22 @@ function updateNext () {
         } while (prevText === text);
 
         // modify displayed text
-        displayContent.textContent = text;
-        displayContent.style.color = 'white';
+        if (expType === 2) {
+            let color = text.toLowerCase();
+            displayContent.innerHTML = '<span class="block" style="background-color: ' + color + ';"/>';
+        } else {
+            displayContent.textContent = text;
+            displayContent.style.color = 'white';
+        }
     }
-
     lastTimeStamp = Date.now();
 }
 
 
 window.onload = function () {
+    // 7vw -> 17vw
+    displayContent.style.fontSize = '7vw';
+
     let httpRequest = new XMLHttpRequest();
     httpRequest.overrideMimeType('text/xml');
     httpRequest.open('GET', configAPI, true);
@@ -138,8 +158,10 @@ window.onload = function () {
             if (httpRequest.status === 200) {
                 const res = JSON.parse(httpRequest.response);
                 maxShow = parseInt(
-                    res[document.location.pathname.substr(1)], 10
+                    res["Setting"][document.location.pathname.substr(1)], 10
                 );
+                expType = parseInt(res["Setting"]['experiment_type'], 10);
+                displayContent.textContent = res["Wording"]['before_exp']
             } else {
                 alert('There was a problem with the request, please reload the page.');
             }

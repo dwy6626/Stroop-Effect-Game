@@ -44,12 +44,16 @@ def record():
 
 @app.route('/api/config')
 def get_config():
-    return jsonify(config.CONFIG["Setting"])
+    return jsonify(config.CONFIG)
 
 
 def get_experiment(path):
     data.clear()
-    return render_template("experiment.html", exp_title=config.CONFIG['Wording'][path[1:]])
+    return render_template(
+        "experiment.html",
+        exp_title=config.CONFIG['Wording'][path[1:]],
+        **config.CONFIG['Wording']
+    )
 
 
 if __name__ == '__main__':

@@ -25,11 +25,13 @@ pip install -r requirements.txt
 
 modify `config.toml`
 
+- `experiment_type`: which experiment in Stroop's work (`1` or `2`) 
 - `test`: how many runs in pre-testing
 - `experiment`: how many runs in formal testing
-- `filter`: discard outliers (in measured time difference)
+- `filter`: discard outliers? (in measured time difference)
 - `outlier_over_std`: tolerance for data, deviating from mean
 - `min_data_filter`: discard outliers when collected data > this value
+- `output_file`:  test result will append to this file in `.csv` format
 
 
 ## Usage

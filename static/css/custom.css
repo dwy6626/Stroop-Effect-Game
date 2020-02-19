@@ -15,17 +15,6 @@ div.small {
     max-width: 900px;
 }
 
-div.block-over {
-    font-size: 7vw;
-    font-weight: bold;
-    color: white;
-    position: absolute;
-    top: 11vw;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-}
-
 .video-container {
 	position: relative;
 	padding-bottom: 56.25%; /* 16:9 */
@@ -49,13 +38,40 @@ h1, h2, h3, p {
     margin-right: auto;
 }
 
-div.experiment-texts {
+div.experiment-display {
     background: black;
+    color: black;
+    padding-top: 6vw;
+    padding-bottom: 6vw;
+    margin-bottom: 20px;
+    height: 20vw;
+    width: 100%;
+    text-align: center;
+    display: table;
+}
+
+div.experiment-texts {
     font-size: 17vw;
     font-weight: bold;
-    color: black;
-    padding: 6vw;
-    margin-bottom: 20px;
+    color: white;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.center-align {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.block {
+    height: 16vw;
+    width: 34vw;
+    background-color: red;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 div.middle {
@@ -118,26 +134,8 @@ div.vertical-middle {
 }
 
 @media screen and (min-width: 1400px) {
-    div.experiment-texts {
-        padding: 84px;
-    }
-    div.block-over {
-        top: 154px;
-    }
-}
-
-@media screen and (min-width: 1600px) {
-    div.experiment-texts {
-        font-size: 256px;
-    }
-    div.block-over {
-        font-size: 112px;
-    }
-}
-
-@media screen and (max-width: 720px) {
-    div.experiment-texts {
-        padding: 43px;
-        font-size: 122px;
+    div.experiment-display {
+        padding-top: 84px;
+        padding-bottom: 84px;
     }
 }
