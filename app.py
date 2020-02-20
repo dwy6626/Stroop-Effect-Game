@@ -47,6 +47,11 @@ def get_sample():
     return jsonify(sample.get_sample())
 
 
+@app.route('/api/config')
+def get_config():
+    return jsonify(config.CONFIG)
+
+
 def get_experiment(path):
     data.clear()
     sample.reset(path)

@@ -25,18 +25,24 @@ def get_sample():
     _REMAIN -= 1
 
     # 1st row
-    row = _COLOR.copy()
+    row = list(range(3))
     random.shuffle(row)
 
     # 2nd and 3rd row
     sign = random.choice([1, -1])
     row2 = rotate(row, sign * 1)
     row3 = rotate(row, sign * 2)
+    samples = row + row2 + row3
 
     _IS_CONFLICT = not _IS_CONFLICT
+
+    # conflict text
+    conflict_text = rotate(_COLOR, random.choice([1, 2]))
+
     return {
-        'samples': row + row2 + row3,
-        'isConflict': _IS_CONFLICT
+        'samples': [_COLOR[i] for i in samples],
+        'isConflict': _IS_CONFLICT,
+        'conflictTexts': [conflict_text[i] for i in samples]
     }
 
 

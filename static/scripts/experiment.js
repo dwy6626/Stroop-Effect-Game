@@ -1,6 +1,8 @@
+const description = document.getElementById("text-before-exp");
 const experimentColor = ["red", "green", "blue"];
 const dataAPI = '/api/record';
 const sampleAPI = '/api/sample';
+const configAPI = '/api/config';
 
 
 // keyboard mapping
@@ -16,6 +18,7 @@ const maxTableContent = 9;
 let lastTimeStamp;
 let started = false;
 let resultShown = false;
+let config;
 let active;
 let sample;
 let data = [];
@@ -26,7 +29,7 @@ window.addEventListener("keydown", function (event) {
 
     if (event.key in keyMap && !resultShown) {
         if (!started) {
-            document.getElementById("text-before-exp").style.color = 'white';
+            description.style.color = 'white';
             started = true;
             updateNext();
         } else updateExperiment(keyMap[event.key]);
@@ -34,19 +37,23 @@ window.addEventListener("keydown", function (event) {
 });
 
 
-function addTable(contents, tableContent='None') {
+function addTable(contents, tableContent=false, conflictTexts=null) {
     let table = "";
     let i;
     for (i=0; i<maxTableContent; i++) {
         table += `<div class="pure-u-1-3" id="${i}">`;
-        if (tableContent === 'Block')
-            table += `<span class="block" style="background-color: ${contents[i].toLowerCase()}"> </span>`;
-        else if (tableContent === 'Text') table += `<p>${contents[i].toUpperCase()}</p>`;
+        if (tableContent) {
+            if (conflictTexts === null) {
+                table += `<span class="block" style="background-color: ${contents[i].toLowerCase()}"> </span>`;
+            } else {
+                table += `<p style="color: ${contents[i].toLowerCase()}">${conflictTexts[i].toUpperCase()}</p>`;
+            }
+        }
         table += '</div>'
     }
     document.getElementById("exp-table").innerHTML = table;
     active = 0;
-    if (tableContent !== 'None') {
+    if (tableContent) {
         document.getElementById(active).style.borderColor = 'black';
         sample = contents;
         lastTimeStamp = Date.now();
@@ -74,7 +81,7 @@ function updateExperiment (inp) {
             let sendData = new XMLHttpRequest();
             sendData.open('POST', dataAPI, true);
             sendData.send(JSON.stringify(data));
-            updateNext();
+            clean();
         }
         lastTimeStamp = Date.now();
     } else {
@@ -92,28 +99,40 @@ function updateNext () {
         if (getSample.readyState === XMLHttpRequest.DONE) {
             if (getSample.status === 200) {
                 const res = JSON.parse(getSample.response);
-                console.log(res);
 
                 // check if the experiment is ended
-                if (res['isConflict'] !== null) {
-                    const testType = (res['isConflict'] ? 'Text' : 'Block');
-                    addTable(res['samples'], testType);
-                } else {
-                    showResult()
-                }
-
+                let conflictTexts = null;
+                if (res['samples'] !== null) {
+                    if (res['isConflict']) conflictTexts = res['conflictTexts'];
+                    addTable(res['samples'], true, conflictTexts);
+                } else showResult();
 
             } else {
                 alert('There was a problem with the request, please reload the page.');
             }
-            console.log(data);
-            data = [];
         }
     };
 }
 
 
-window.onload = addTable;
+window.onload = function () {
+    let getConfig = new XMLHttpRequest();
+    getConfig.open('GET', configAPI, true);
+    getConfig.send();
+    getConfig.onreadystatechange = function () {
+        config = JSON.parse(getConfig.response);
+    };
+    addTable();
+};
+
+
+function clean() {
+    description.style.color = 'black';
+    if (config) description.textContent = config['Wording']['between_exp'];
+    started = false;
+    data = [];
+    addTable();
+}
 
 
 function showResult() {
