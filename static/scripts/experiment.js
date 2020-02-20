@@ -1,176 +1,123 @@
-const experimentText = ["RED", "GREEN", "BLUE"];
-const displayContent = document.querySelector("div .experiment-texts");
+const experimentColor = ["red", "green", "blue"];
 const dataAPI = '/api/record';
-const configAPI = '/api/config';
+const sampleAPI = '/api/sample';
+
+
+// keyboard mapping
+const keyMap = {
+    a: experimentColor[0],
+    s: experimentColor[1],
+    d: experimentColor[2],
+};
 
 
 // global variables
-let expType = 2;
+const maxTableContent = 9;
 let lastTimeStamp;
-let countConflict = 0;
-let countNormal = 0;
 let started = false;
+let resultShown = false;
+let active;
+let sample;
+let data = [];
 
-// temperate values, will be modified from backend
-let maxShow = 10;
 
+window.addEventListener("keydown", function (event) {
+    if (event.defaultPrevented) return;
 
-document.querySelector("span.circle.red").addEventListener("click", function () {
-    updateExperiment(experimentText[0])
+    if (event.key in keyMap && !resultShown) {
+        if (!started) {
+            document.getElementById("text-before-exp").style.color = 'white';
+            started = true;
+            updateNext();
+        } else updateExperiment(keyMap[event.key]);
+    }
 });
 
 
-document.querySelector("span.circle.green").addEventListener("click", function () {
-    updateExperiment(experimentText[1])
-});
-
-
-document.querySelector("span.circle.blue").addEventListener("click", function () {
-    updateExperiment(experimentText[2])
-});
-
-
-function getRandomInt(x){
-    return Math.floor(Math.random()*x);
+function addTable(contents, tableContent='None') {
+    let table = "";
+    let i;
+    for (i=0; i<maxTableContent; i++) {
+        table += `<div class="pure-u-1-3" id="${i}">`;
+        if (tableContent === 'Block')
+            table += `<span class="block" style="background-color: ${contents[i].toLowerCase()}"> </span>`;
+        else if (tableContent === 'Text') table += `<p>${contents[i].toUpperCase()}</p>`;
+        table += '</div>'
+    }
+    document.getElementById("exp-table").innerHTML = table;
+    active = 0;
+    if (tableContent !== 'None') {
+        document.getElementById(active).style.borderColor = 'black';
+        sample = contents;
+        lastTimeStamp = Date.now();
+    }
 }
 
 
-function updateExperiment (key) {
-    if (!started) {
-        started = true;
-        displayContent.style.fontSize = '';
+function updateBorder() {
+    document.getElementById(active).style.borderColor = 'lightgray';
+    active += 1;
+    document.getElementById(active).style.borderColor = 'black';
+}
+
+
+function updateExperiment (inp) {
+    const keyTime = Date.now();
+    const timeDifference = keyTime - lastTimeStamp;
+    const ans = sample[active].toLowerCase();
+    if (inp === ans) {
+        console.log(`correct, time: ${timeDifference}`);
+        data.push(['correct', timeDifference]);
+        if (active < maxTableContent-1) {
+            updateBorder();
+        } else {
+            let sendData = new XMLHttpRequest();
+            sendData.open('POST', dataAPI, true);
+            sendData.send(JSON.stringify(data));
+            updateNext();
+        }
+        lastTimeStamp = Date.now();
     } else {
-        let prevText;
-        let conflict;
-        const keyTime = Date.now();
-        if (expType === 2) {
-            conflict = displayContent.innerHTML.includes('span');
-            if (conflict) {
-                prevText = document.querySelector("span.block").style.backgroundColor.toUpperCase();
-            } else {
-                prevText = displayContent.style.color.toUpperCase();
-            }
-        } else {
-            conflict = displayContent.style.color === 'white';
-            prevText = displayContent.textContent;
-        }
-        const timeDifference = keyTime - lastTimeStamp;
-
-        // judgement
-        if (key === prevText) {
-            console.log("pass");
-
-        } else {
-            // test until success
-            console.log("fail");
-            return
-        }
-
-        // record time difference
-        console.log(`TD: ${timeDifference}`);
-
-        let httpRequest = new XMLHttpRequest();
-        httpRequest.overrideMimeType('text/xml');
-        httpRequest.open('POST', dataAPI, true);
-        httpRequest.setRequestHeader('Content-Type', 'text/plain');
-        httpRequest.send(`${conflict} ${timeDifference}`);
+        data.push(['wrong', timeDifference]);
+        console.log('wrong');
     }
-    // update displayed text
-    updateNext();
 }
 
 
 function updateNext () {
-    // break?
-    const prevText = displayContent.textContent;
+    let getSample = new XMLHttpRequest();
+    getSample.open('GET', sampleAPI, true);
+    getSample.send();
+    getSample.onreadystatechange = function () {
+        if (getSample.readyState === XMLHttpRequest.DONE) {
+            if (getSample.status === 200) {
+                const res = JSON.parse(getSample.response);
+                console.log(res);
 
-    // conflict or normal
-    let conflict;
-    if (countConflict < maxShow / 2) {
-        if (countNormal < maxShow / 2) {
-            conflict = getRandomInt(2) === 1;
-        } else {
-            conflict = true;
-        }
-    } else if (countNormal < maxShow / 2) {
-        conflict = false;
-    } else {
-        showResult();
-        return;
-    }
-
-    if (conflict) {
-        countConflict ++;
-        const prevColor = displayContent.style.color;
-
-        // conflict text
-        let text, color;
-        do {
-            let x1 = 0, x2 = 0;
-            do {
-                x1 = getRandomInt(3);
-                x2 = getRandomInt(3);
-            } while (x1 === x2);
-
-            text = experimentText[x1];
-            color = experimentText[x2].toLowerCase();
-        } while (prevText === text || prevColor === color);
-
-        // modify displayed text
-        displayContent.textContent = text;
-        displayContent.style.color = color;
-    } else {
-        countNormal ++;
-
-        // change text
-        let text, x;
-        do {
-            x = getRandomInt(3);
-            text = experimentText[x];
-        } while (prevText === text);
-
-        // modify displayed text
-        if (expType === 2) {
-            let color = text.toLowerCase();
-            displayContent.innerHTML = '<span class="block" style="background-color: ' + color + ';"/>';
-        } else {
-            displayContent.textContent = text;
-            displayContent.style.color = 'white';
-        }
-    }
-    lastTimeStamp = Date.now();
-}
+                // check if the experiment is ended
+                if (res['isConflict'] !== null) {
+                    const testType = (res['isConflict'] ? 'Text' : 'Block');
+                    addTable(res['samples'], testType);
+                } else {
+                    showResult()
+                }
 
 
-window.onload = function () {
-    // 7vw -> 17vw
-    displayContent.style.fontSize = '7vw';
-
-    let httpRequest = new XMLHttpRequest();
-    httpRequest.overrideMimeType('text/xml');
-    httpRequest.open('GET', configAPI, true);
-    httpRequest.setRequestHeader('Content-Type', 'text/plain');
-    httpRequest.onreadystatechange = alertContents;
-    httpRequest.send(document.location.pathname);
-
-    function alertContents() {
-        if (httpRequest.readyState === XMLHttpRequest.DONE) {
-            if (httpRequest.status === 200) {
-                const res = JSON.parse(httpRequest.response);
-                maxShow = parseInt(
-                    res["Setting"][document.location.pathname.substr(1)], 10
-                );
-                expType = parseInt(res["Setting"]['experiment_type'], 10);
-                displayContent.textContent = res["Wording"]['before_exp']
             } else {
                 alert('There was a problem with the request, please reload the page.');
             }
+            console.log(data);
+            data = [];
         }
-    }
-};
+    };
+}
+
+
+window.onload = addTable;
 
 
 function showResult() {
+    resultShown = true;
     let httpRequest = new XMLHttpRequest();
     httpRequest.overrideMimeType('text/xml');
     httpRequest.open('POST', '/api/results', true);

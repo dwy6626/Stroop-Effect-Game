@@ -1,7 +1,7 @@
 [Setting]
 experiment_type = 2
-test = 6
-experiment = 40
+test = 2
+experiment = 6
 filter = true
 outlier_over_std = 3
 min_data_filter = 10
@@ -17,7 +17,7 @@ results = "實驗結果"
 experiment = "正式局"
 back_button = "回到主畫面"
 test_button = "試玩"
-before_exp = "點選任意圓圈開始測試"
+before_exp = "點選鍵盤任意按鍵開始實驗，並同時開始計時"
 exp_button = "正式開始"
 end_of_experiment = "實驗結束，謝謝您的參與，以下是這次的數據："
 help_message = """

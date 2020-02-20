@@ -2,10 +2,12 @@
 Handling measured response time
 """
 from src import config
+from src import sample
 
 
 from pathlib import Path
 from datetime import datetime
+import json
 
 
 import numpy as np
@@ -34,12 +36,15 @@ def date_format(dt):
 def update(res):
     res = res.decode()
     print(f'data received: {res}')
-    is_conflict, diff = res.split()
-    diff = int(diff)
-    if is_conflict == 'false':
-        NORMAL.append(diff)
-    else:
-        CONFLICT.append(diff)
+    res = json.loads(res)
+    for r in res:
+        print(r)
+    for tf, td in res:
+        if tf == "correct":
+            if sample.is_conflict_text():
+                CONFLICT.append(td)
+            else:
+                NORMAL.append(td)
 
 
 def clear():

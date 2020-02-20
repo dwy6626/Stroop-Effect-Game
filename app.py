@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from src import data, config
+from src import data, config, sample
 
 
 app = Flask(__name__)
@@ -42,13 +42,14 @@ def record():
     return "true"
 
 
-@app.route('/api/config')
-def get_config():
-    return jsonify(config.CONFIG)
+@app.route('/api/sample')
+def get_sample():
+    return jsonify(sample.get_sample())
 
 
 def get_experiment(path):
     data.clear()
+    sample.reset(path)
     return render_template(
         "experiment.html",
         exp_title=config.CONFIG['Wording'][path[1:]],

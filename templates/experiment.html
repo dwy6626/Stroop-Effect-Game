@@ -2,15 +2,12 @@
 {% block title %}{{ exp_title }}{% endblock title%}
 
 {% block content %}
-<div class="middle">
-    <div class="experiment-display">
-        <div class="center-align">
-            <div class="experiment-texts"></div>
-        </div>
+<div class="vertical-middle exp-zone">
+    <div class="exp-text" id="text-before-exp">
+        <p>{{ before_exp }}</p>
     </div>
-    <span class="circle blue"></span><br>
-    <span class="circle green"></span>
-    <span class="circle red"></span>
+    <div class="pure-g" id="exp-table"></div>
+
 </div>
 <script src={{ url_for('static', filename="scripts/experiment.js") }}></script>
 <script src={{ url_for('static', filename="scripts/back.js") }}></script>
