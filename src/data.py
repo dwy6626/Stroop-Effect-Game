@@ -24,7 +24,7 @@ TEMPLATE = "衝突文字平均：{:.0f} 毫秒\n" + \
 
 
 COLUMNS = [
-    '測驗時間日期', '實驗類型', '時間差',
+    '測驗時間日期', '時間差',
     '衝突文字平均', '衝突文字標準差', '一般文字平均', '一般文字標準差'
 ]
 
@@ -37,8 +37,6 @@ def update(res):
     res = res.decode()
     print(f'data received: {res}')
     res = json.loads(res)
-    for r in res:
-        print(r)
     for tf, td in res:
         if tf == "correct":
             if sample.is_conflict_text():
@@ -70,7 +68,7 @@ def get_results():
     # no test results
     if normal.size == 0 or conflict.size == 0:
         return pd.Series(
-            [datetime.now(), 0, 0, 0, 0, 0, 0], index=COLUMNS
+            [datetime.now(), 0, 0, 0, 0, 0], index=COLUMNS
         )
 
     m1 = np.mean(conflict)
@@ -79,14 +77,14 @@ def get_results():
     s2 = np.std(normal)
 
     return pd.Series([
-        datetime.now(), config.CONFIG['Setting']['experiment_type'],
+        datetime.now(),
         m1 - m2, m1, s1, m2, s2
     ], index=COLUMNS)
 
 
 def format_results(results):
     return TEMPLATE.format(
-       results[COLUMNS[3]], results[COLUMNS[5]], results[COLUMNS[2]]
+       results[COLUMNS[2]], results[COLUMNS[4]], results[COLUMNS[1]]
     ).split('\n')
 
 
@@ -104,3 +102,33 @@ def record_to_file(results):
     pd.DataFrame([results]).to_csv(
         file_path, mode='a', header=False, index=False
     )
+
+
+def visualize():
+    print('plot figure')
+    min_size = config.CONFIG['Setting']['minimum_plot_size']
+    print(CONFLICT, NORMAL)
+    if len(CONFLICT) < min_size or len(NORMAL) < min_size:
+        print('not enough data')
+        return
+
+    import matplotlib as mpl
+    mpl.rcParams.update(config.CONFIG['Plotting'])
+
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    fig = plt.figure()
+    ax = plt.gca()
+    sns.distplot(np.array(CONFLICT) * .1,
+                 ax=ax, norm_hist=False, kde=False,
+                 label=config.CONFIG['Wording']['line_conflict'])
+    sns.distplot(np.array(NORMAL) * .1,
+                 ax=ax, norm_hist=False, kde=False,
+                 label = config.CONFIG['Wording']['line_normal'])
+
+    print(config.CONFIG['Wording'])
+    plt.xlabel(config.CONFIG['Wording']['plot_x'])
+    plt.ylabel(config.CONFIG['Wording']['plot_y'])
+    plt.legend()
+
+    return fig

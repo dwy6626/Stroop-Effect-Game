@@ -1,4 +1,6 @@
 Flask==1.1.1
+seaborn==0.10.0
 toml
 numpy
 pandas
+matplotlib

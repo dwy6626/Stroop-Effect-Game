@@ -11,7 +11,14 @@
         {% endfor %}
     </p>
     <div class="middle">
-        <a class="pure-button custom-restricted-width" href="{{ url_for('index') }}">{{ back_button }}</a>
+        <h2>{{ your_image }}</h2>
+        <div class="result-image small" id="image-show"></div>
+        <h2>{{ literature_image }}</h2>
+        <div class="result-image small">
+            <img src="{{ url_for('static', filename='img/literature.png') }}" alt="results">
+        </div>
+
+        <a class="pure-button custom-restricted-width more-bottom" href="{{ url_for('index') }}">{{ back_button }}</a>
     </div>
 </div>
 {% endblock %}

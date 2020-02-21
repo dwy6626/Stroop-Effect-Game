@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, Response
+import io
 from src import data, config, sample
 
 
@@ -27,6 +28,16 @@ def experiment():
     return get_experiment(request.path)
 
 
+@app.route('/results.png')
+def get_visualization():
+    # https://stackoverflow.com/questions/50728328
+    fig = data.visualize()
+    output = io.BytesIO()
+    from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+
 @app.route('/api/results', methods = ['POST'])
 def results():
     # TODO: add plot
@@ -39,14 +50,9 @@ def results():
     )
 
 
-@app.route('/api/record', methods = ['POST'])
-def record():
-    data.update(request.get_data())
-    return "true"
-
-
-@app.route('/api/sample')
+@app.route('/api/sample', methods = ['POST'])
 def get_sample():
+    data.update(request.get_data())
     return jsonify(sample.get_sample())
 
 

@@ -1,6 +1,5 @@
 const description = document.getElementById("text-before-exp");
 const experimentColor = ["red", "green", "blue"];
-const dataAPI = '/api/record';
 const sampleAPI = '/api/sample';
 const configAPI = '/api/config';
 
@@ -31,7 +30,6 @@ let data = [];
 
 
     window.addEventListener("keydown", function (event) {
-        // TODO: prevent multiple keydown
         if (event.defaultPrevented) return;
 
         if (event.key in keyMap) {
@@ -96,14 +94,8 @@ function updateExperiment (inp) {
     if (inp === ans) {
         console.log(`correct, time: ${timeDifference}`);
         data.push(['correct', timeDifference]);
-        if (active < maxTableContent-1) {
-            updateBorder();
-        } else {
-            let sendData = new XMLHttpRequest();
-            sendData.open('POST', dataAPI, true);
-            sendData.send(JSON.stringify(data));
-            clean();
-        }
+        if (active < maxTableContent-1) updateBorder();
+        else updateNext ();
         lastTimeStamp = Date.now();
     } else {
         data.push(['wrong', timeDifference]);
@@ -114,9 +106,9 @@ function updateExperiment (inp) {
 
 function updateNext () {
     let getSample = new XMLHttpRequest();
-    getSample.open('GET', sampleAPI, true);
+    getSample.open('POST', sampleAPI, true);
     getSample.responseType = 'json';
-    getSample.send();
+    getSample.send(JSON.stringify(data));
     getSample.onreadystatechange = function () {
         if (getSample.readyState === XMLHttpRequest.DONE) {
             if (getSample.status === 200) {
@@ -134,6 +126,10 @@ function updateNext () {
             }
         }
     };
+    description.style.color = 'black';
+    if (config) description.textContent = config['Wording']['between_exp'];
+    started = false;
+    data = [];
 }
 
 
@@ -159,15 +155,6 @@ window.onload = function () {
 };
 
 
-function clean() {
-    description.style.color = 'black';
-    if (config) description.textContent = config['Wording']['between_exp'];
-    started = false;
-    data = [];
-    updateNext();
-}
-
-
 function showResult() {
     resultShown = true;
     let httpRequest = new XMLHttpRequest();
@@ -176,6 +163,19 @@ function showResult() {
     httpRequest.setRequestHeader('Content-Type', 'text/plain');
     httpRequest.send(window.location.pathname);
     httpRequest.onreadystatechange = function () {
-        document.body.innerHTML = httpRequest.response
+        document.body.innerHTML = httpRequest.response;
+        let getImage = new XMLHttpRequest();
+        getImage.open('GET', configAPI, true);
+        getImage.responseType = 'document';
+        getImage.send();
+        getImage.onreadystatechange = function () {
+            if (getImage.readyState === XMLHttpRequest.DONE) {
+                if (getImage.status === 200) {
+                    document.getElementById('image-show').innerHTML = '<img src="/results.png" alt="results">'
+                }
+            }
+        };
     };
+
+
 }

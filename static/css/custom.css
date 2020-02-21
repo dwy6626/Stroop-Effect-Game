@@ -3,6 +3,10 @@ h1 {
     margin-top: 0;
 }
 
+h2 {
+    font-size: 3em;
+}
+
 p, .pure-button {
     font-size: 2em;
 }
@@ -31,6 +35,14 @@ div.small {
 
 div.exp-zone {
     max-width: 80%;
+}
+
+div.result-image {
+    margin: auto;
+}
+
+div.result-image > img {
+    width: 100%;
 }
 
 .video-container {
@@ -102,10 +114,10 @@ div.upper {
         width: 190px;
         height: 190px;
     }
-    .pure-g > div {
+    .exp-zone > .pure-g > div {
         height: 285px;
     }
-    .pure-g > div > * {
+    .exp-zone > .pure-g > div > * {
         font-size: 95px;
     }
 }

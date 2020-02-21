@@ -1,11 +1,23 @@
 [Setting]
-experiment_type = 2
 test = 2
 experiment = 6
 filter = false
 outlier_over_std = 3
 min_data_filter = 10
+minimum_plot_size = 3
 output_file = 'output/record.csv'
+
+[Plotting]
+'font.size' = 30
+'lines.linewidth' = 3.5
+'legend.fontsize' = 25
+'axes.labelsize' = 20
+'axes.titlesize' = 24
+"ytick.labelsize" = 18
+"xtick.labelsize" = 18
+'figure.figsize' = "10, 5"
+'figure.autolayout' = true
+'font.family' = 'PMingLiU'
 
 [Wording]
 title = "Stroop Effect 互動實驗"
@@ -27,3 +39,9 @@ help_message = """
 第二行
 第三行
 """
+plot_x = '反應時間 (秒 / 100)'
+plot_y = '次數'
+line_normal = '一般文字'
+line_conflict = '衝突文字'
+your_image = "您的實驗結果："
+literature_image = "原始實驗結果："
