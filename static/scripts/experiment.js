@@ -24,19 +24,47 @@ let sample;
 let data = [];
 
 
-window.addEventListener("keydown", function (event) {
-    // TODO: prevent multiple keydown
-    if (event.defaultPrevented) return;
+{
+    const keyInterval = 50;
+    let lastKeyTime = Date.now();
+    let pressedKeys = {};
 
-    if (event.key in keyMap && !resultShown) {
-        if (!started) {
-            description.style.color = 'white';
-            started = true;
-            showSample();
-        } else updateExperiment(keyMap[event.key]);
+
+    window.addEventListener("keydown", function (event) {
+        // TODO: prevent multiple keydown
+        if (event.defaultPrevented) return;
+
+        if (event.key in keyMap) {
+            pressedKeys[event.key] = true;
+            let thisKeyTime = Date.now();
+            if (!resultShown && keyUniq() && thisKeyTime - lastKeyTime > keyInterval) {
+                if (!started) {
+                    description.style.color = 'white';
+                    started = true;
+                    showSample();
+                } else updateExperiment(keyMap[event.key]);
+            }
+            lastKeyTime = thisKeyTime;
+        }
+    });
+
+
+    window.addEventListener("keyup", function (event) {
+        if (event.key in pressedKeys) pressedKeys[event.key] = false;
+    });
+
+
+    function keyUniq() {
+        let down = 0;
+
+        function checkDown(x) {
+            if (pressedKeys[x]) down++;
+        }
+
+        Object.keys(keyMap).forEach(checkDown);
+        return down === 1;
     }
-});
-
+}
 
 function addTable(contents, conflictTexts=null) {
     let table = "";
@@ -109,6 +137,16 @@ function updateNext () {
 }
 
 
+function showSample() {
+    document.querySelectorAll("#sample").forEach(
+        x => x.style.visibility = 'visible'
+    );
+    active = 0;
+    document.getElementById(0).style.borderColor = 'black';
+    lastTimeStamp = Date.now();
+}
+
+
 window.onload = function () {
     let getConfig = new XMLHttpRequest();
     getConfig.open('GET', configAPI, true);
@@ -140,14 +178,4 @@ function showResult() {
     httpRequest.onreadystatechange = function () {
         document.body.innerHTML = httpRequest.response
     };
-}
-
-
-function showSample() {
-    document.querySelectorAll("#sample").forEach(
-        x => x.style.visibility = 'visible'
-    );
-    active = 0;
-    document.getElementById(0).style.borderColor = 'black';
-    lastTimeStamp = Date.now();
 }
