@@ -25,39 +25,32 @@ let data = [];
 
 
 window.addEventListener("keydown", function (event) {
+    // TODO: prevent multiple keydown
     if (event.defaultPrevented) return;
 
     if (event.key in keyMap && !resultShown) {
         if (!started) {
             description.style.color = 'white';
             started = true;
-            updateNext();
+            showSample();
         } else updateExperiment(keyMap[event.key]);
     }
 });
 
 
-function addTable(contents, tableContent=false, conflictTexts=null) {
+function addTable(contents, conflictTexts=null) {
     let table = "";
-    let i;
-    for (i=0; i<maxTableContent; i++) {
+    for (let i = 0; i < maxTableContent; i++) {
         table += `<div class="pure-u-1-3" id="${i}">`;
-        if (tableContent) {
-            if (conflictTexts === null) {
-                table += `<span class="block" style="background-color: ${contents[i].toLowerCase()}"> </span>`;
-            } else {
-                table += `<p style="color: ${contents[i].toLowerCase()}">${conflictTexts[i].toUpperCase()}</p>`;
-            }
+        if (conflictTexts === null) {
+            table += `<span class="block" id="sample" style="background-color: ${contents[i].toLowerCase()}; visibility: hidden;"> </span>`;
+        } else {
+            table += `<p id="sample" style="color: ${contents[i].toLowerCase()}; visibility: hidden;">${conflictTexts[i].toUpperCase()}</p>`;
         }
         table += '</div>'
     }
     document.getElementById("exp-table").innerHTML = table;
-    active = 0;
-    if (tableContent) {
-        document.getElementById(active).style.borderColor = 'black';
-        sample = contents;
-        lastTimeStamp = Date.now();
-    }
+    sample = contents;
 }
 
 
@@ -94,17 +87,18 @@ function updateExperiment (inp) {
 function updateNext () {
     let getSample = new XMLHttpRequest();
     getSample.open('GET', sampleAPI, true);
+    getSample.responseType = 'json';
     getSample.send();
     getSample.onreadystatechange = function () {
         if (getSample.readyState === XMLHttpRequest.DONE) {
             if (getSample.status === 200) {
-                const res = JSON.parse(getSample.response);
+                const res = getSample.response;
 
                 // check if the experiment is ended
                 let conflictTexts = null;
                 if (res['samples'] !== null) {
                     if (res['isConflict']) conflictTexts = res['conflictTexts'];
-                    addTable(res['samples'], true, conflictTexts);
+                    addTable(res['samples'], conflictTexts);
                 } else showResult();
 
             } else {
@@ -118,11 +112,12 @@ function updateNext () {
 window.onload = function () {
     let getConfig = new XMLHttpRequest();
     getConfig.open('GET', configAPI, true);
+    getConfig.responseType = 'json';
     getConfig.send();
     getConfig.onreadystatechange = function () {
-        config = JSON.parse(getConfig.response);
+        config = getConfig.response;
     };
-    addTable();
+    updateNext();
 };
 
 
@@ -131,7 +126,7 @@ function clean() {
     if (config) description.textContent = config['Wording']['between_exp'];
     started = false;
     data = [];
-    addTable();
+    updateNext();
 }
 
 
@@ -145,4 +140,14 @@ function showResult() {
     httpRequest.onreadystatechange = function () {
         document.body.innerHTML = httpRequest.response
     };
+}
+
+
+function showSample() {
+    document.querySelectorAll("#sample").forEach(
+        x => x.style.visibility = 'visible'
+    );
+    active = 0;
+    document.getElementById(0).style.borderColor = 'black';
+    lastTimeStamp = Date.now();
 }

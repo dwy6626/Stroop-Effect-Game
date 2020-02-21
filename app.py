@@ -3,6 +3,7 @@ from src import data, config, sample
 
 
 app = Flask(__name__)
+# TODO: modify README
 
 
 @app.route('/')
@@ -12,6 +13,7 @@ def index():
 
 @app.route('/help')
 def help():
+    # TODO: replace video and text
     return render_template("help.html", **config.CONFIG['Wording'])
 
 
@@ -27,6 +29,7 @@ def experiment():
 
 @app.route('/api/results', methods = ['POST'])
 def results():
+    # TODO: add plot
     exp_results = data.get_results()
     if 'experiment' in request.get_data().decode():
         data.record_to_file(exp_results)
