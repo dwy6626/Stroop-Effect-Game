@@ -107,7 +107,8 @@ def record_to_file(results):
 def visualize():
     print('plot figure')
     min_size = config.CONFIG['Setting']['minimum_plot_size']
-    print(CONFLICT, NORMAL)
+    print("Conflict", CONFLICT)
+    print("Normal", NORMAL)
     if len(CONFLICT) < min_size or len(NORMAL) < min_size:
         print('not enough data')
         return
@@ -126,7 +127,6 @@ def visualize():
                  ax=ax, norm_hist=False, kde=False,
                  label = config.CONFIG['Wording']['line_normal'])
 
-    print(config.CONFIG['Wording'])
     plt.xlabel(config.CONFIG['Wording']['plot_x'])
     plt.ylabel(config.CONFIG['Wording']['plot_y'])
     plt.legend()
