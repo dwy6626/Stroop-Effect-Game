@@ -156,6 +156,7 @@ window.onload = function () {
 
 
 function showResult() {
+    // TODO: show results only in experiment
     resultShown = true;
     let httpRequest = new XMLHttpRequest();
     httpRequest.overrideMimeType('text/xml');

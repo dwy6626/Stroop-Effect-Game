@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, Response
+from flask import Flask, render_template, request, jsonify, Response, abort
 import io
 from src import data, config, sample
 
@@ -31,9 +31,29 @@ def experiment():
 @app.route('/results.png')
 def get_visualization():
     # https://stackoverflow.com/questions/50728328
-    fig = data.visualize()
-    output = io.BytesIO()
     from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+    fig = data.visualize()
+    if not fig:
+        abort(404)
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+
+@app.route('/literature.png')
+def get_literature_plot():
+    from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+    fig = data.literature_replot()
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+
+@app.route('/all_local_results.png')
+def get_local_plot():
+    from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+    fig = data.plot_all_local_results()
+    output = io.BytesIO()
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
 

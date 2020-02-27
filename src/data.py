@@ -29,6 +29,11 @@ COLUMNS = [
 ]
 
 
+LITERATURE_NORMAL = [5, 39, 34, 13, 9, 1]
+LITERATURE_CONFLICT = [0, 0, 5, 2, 7, 16, 25, 16, 13, 7, 4, 3]
+LITERATURE_BASE = 40
+
+
 def date_format(dt):
     return dt.strftime('%Y 年 %m 月 %d 日 %H 時 %M 分 %S 秒')
 
@@ -88,7 +93,7 @@ def format_results(results):
     ).split('\n')
 
 
-def record_to_file(results):
+def check_create_output_file():
     # check file exist
     file_path = Path(config.CONFIG['Setting']['output_file'])
     if not file_path.parent.exists():
@@ -98,6 +103,11 @@ def record_to_file(results):
             path_or_buf=file_path,
             index=False
         )
+    return file_path
+
+
+def record_to_file(results):
+    file_path = check_create_output_file()
     print(results)
     pd.DataFrame([results]).to_csv(
         file_path, mode='a', header=False, index=False
@@ -113,9 +123,6 @@ def visualize():
         print('not enough data')
         return
 
-    import matplotlib as mpl
-    mpl.rcParams.update(config.CONFIG['Plotting'])
-
     import matplotlib.pyplot as plt
     import seaborn as sns
     fig = plt.figure()
@@ -125,8 +132,111 @@ def visualize():
                  label=config.CONFIG['Wording']['line_conflict'])
     sns.distplot(np.array(NORMAL) * .1,
                  ax=ax, norm_hist=False, kde=False,
-                 label = config.CONFIG['Wording']['line_normal'])
+                 label=config.CONFIG['Wording']['line_normal'])
 
+    plt.xlabel(config.CONFIG['Wording']['plot_x'])
+    plt.ylabel(config.CONFIG['Wording']['plot_y'])
+    plt.legend()
+
+    return fig
+
+
+def literature_replot(
+        mean_normal=62.5, mean_conflict=112.3,
+        color_normal='#ff7f0e', color_conflict='#1f77b4'
+):
+    print('plot result to literature')
+    import matplotlib.pyplot as plt
+    fig = plt.figure()
+
+    # align to longer one
+    normal = np.zeros(max([len(LITERATURE_NORMAL), len(LITERATURE_CONFLICT)]))
+    conflict = normal.copy()
+    normal[:len(LITERATURE_NORMAL)] = LITERATURE_NORMAL
+    conflict[:len(LITERATURE_CONFLICT)] = LITERATURE_CONFLICT
+    xx = np.arange(normal.size)
+
+    bar_params = {
+        "width": 1,
+        "align": 'edge',
+        'alpha': .5,
+    }
+    plt.bar(
+        xx , conflict, fc=color_conflict,
+        label=config.CONFIG['Wording']['line_conflict'],
+        **bar_params
+    )
+    plt.bar(
+        xx, normal, fc=color_normal,
+        label=config.CONFIG['Wording']['line_normal'],
+        **bar_params
+    )
+
+    # extra label
+    max_normal = max(LITERATURE_NORMAL)
+    max_conflict = max(LITERATURE_CONFLICT)
+    maximum = max([max_conflict, max_normal])
+    arrow_params = {
+        'head_width' : .2,
+        'head_length': 1,
+        'ec': (0, 0, 0, .5),
+    }
+    def position_transform(m):
+        return (m - LITERATURE_BASE) / 10
+    ratio_arrow = 1.05
+    arrow_from_bottom = maximum * 0.05
+    plt.arrow(
+       position_transform(mean_normal), max_normal * ratio_arrow,
+        0, -max_normal * ratio_arrow + arrow_from_bottom,
+        fc=color_normal, **arrow_params
+    )
+    plt.text(
+        position_transform(mean_normal), max_normal * ratio_arrow,
+        config.CONFIG['Wording']['arrow_normal']
+    )
+    plt.arrow(
+        position_transform(mean_conflict), max_conflict * ratio_arrow,
+        0, -max_conflict * ratio_arrow + arrow_from_bottom,
+        fc=color_conflict, **arrow_params
+    )
+    plt.text(
+        position_transform(mean_conflict), max_conflict * ratio_arrow,
+        config.CONFIG['Wording']['arrow_conflict']
+    )
+    ticks = np.arange(xx.size + 1)
+
+    plt.ylim(0, maximum * 1.2)
+    plt.xticks(ticks, [LITERATURE_BASE + 10 * i for i in range(ticks.size)])
+    plt.xlabel(config.CONFIG['Wording']['plot_x'])
+    plt.ylabel(config.CONFIG['Wording']['plot_y'])
+    plt.legend()
+
+    return fig
+
+
+def plot_all_local_results():
+    print('plot figure')
+    file_path = check_create_output_file()
+    df = pd.read_csv(file_path)
+    print(df)
+
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    fig = plt.figure()
+    ax = plt.gca()
+    bins = np.arange(
+        LITERATURE_BASE / 10,
+        max([len(LITERATURE_NORMAL), len(LITERATURE_CONFLICT)]) + LITERATURE_BASE / 10
+    ) * 10
+
+    sns.distplot(df[COLUMNS[2]] * .1, bins=bins,
+                 ax=ax, norm_hist=False, kde=False,
+                 label=config.CONFIG['Wording']['line_conflict'])
+    sns.distplot(df[COLUMNS[4]] * .1, bins=bins,
+                 ax=ax, norm_hist=False, kde=False,
+                 label=config.CONFIG['Wording']['line_normal'])
+
+    plt.xticks(bins)
     plt.xlabel(config.CONFIG['Wording']['plot_x'])
     plt.ylabel(config.CONFIG['Wording']['plot_y'])
     plt.legend()
