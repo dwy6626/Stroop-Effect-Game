@@ -2,23 +2,28 @@
 {% block title %}{{ results }}{% endblock title%}
 
 {% block content %}
-<div class="vertical-middle upper">
-    <h1>{{ results }}</h1>
+<div class="middle">
+    <h1 style="font-size: 3em; margin-top: .5em;">{{ results }}</h1>
     <p>{{ end_of_experiment }}</p>
     <p>
         {% for line in show_results %}
             {{line}}<br>
         {% endfor %}
     </p>
-    <div class="middle">
-        <h2>{{ your_image }}</h2>
-        <div class="result-image small" id="image-show"></div>
-        <h2>{{ literature_image }}</h2>
-        <div class="result-image small">
-            <img src="{{ url_for('static', filename='img/literature.png') }}" alt="results">
+    <div class="pure-g">
+        <div class="pure-u-1-2">
+            <h2>{{ literature_image }}</h2>
+            <p>{{ literature_image_discription }}</p>
+            <div class="result-image small" id="literature_image">
+                <img src="{{ url_for('static', filename='img/literature.png') }}" alt="results">
+            </div>
         </div>
-
-        <a class="pure-button custom-restricted-width more-bottom" href="{{ url_for('index') }}">{{ back_button }}</a>
+        <div class="pure-u-1-2">
+            <h2>{{ local_image }}</h2>
+            <p>{{ local_image_discription }}</p>
+            <div class="result-image small" id="local_image"></div>
+        </div>
     </div>
+    <a class="pure-button custom-restricted-width more-bottom" href="{{ url_for('index') }}">{{ back_button }}</a>
 </div>
 {% endblock %}

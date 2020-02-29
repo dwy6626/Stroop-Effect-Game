@@ -4,10 +4,14 @@ h1 {
 }
 
 h2 {
-    font-size: 3em;
+    font-size: 2.5em;
 }
 
-p, .pure-button {
+p {
+    font-size: 1.5em;
+}
+
+.pure-button {
     font-size: 2em;
 }
 

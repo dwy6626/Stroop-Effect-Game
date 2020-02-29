@@ -142,9 +142,12 @@ def visualize():
 
 
 def literature_replot(
-        mean_normal=62.5, mean_conflict=112.3,
         color_normal='#ff7f0e', color_conflict='#1f77b4'
 ):
+    exp_results = get_results()
+    mean_normal = exp_results[COLUMNS[4]] * .1
+    mean_conflict = exp_results[COLUMNS[2]] * .1
+
     print('plot result to literature')
     import matplotlib.pyplot as plt
     fig = plt.figure()

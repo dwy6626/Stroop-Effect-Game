@@ -172,7 +172,8 @@ function showResult() {
         getImage.onreadystatechange = function () {
             if (getImage.readyState === XMLHttpRequest.DONE) {
                 if (getImage.status === 200) {
-                    document.getElementById('image-show').innerHTML = '<img src="/results.png" alt="results">'
+                    document.getElementById('literature_image').innerHTML = '<img src="/literature.png" alt="results">'
+                    document.getElementById('local_image').innerHTML = '<img src="/all_local_results.png" alt="results">'
                 }
             }
         };
