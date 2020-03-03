@@ -23,11 +23,8 @@ pip install -r requirements.txt
 
 ## Usage
 
-### Run the application
-
-```bash
-flask run
-```
+- Run the application via `flask run`
+- Open the application in browser (default url: http://127.0.0.1:5000/)
 
 ### Spec
 ![](./image/stroop-effect-game-spec.jpg)
