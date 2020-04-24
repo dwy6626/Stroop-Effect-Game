@@ -26,6 +26,10 @@ pip install -r requirements.txt
 - Run the application via `flask run`
 - Open the application in browser (default url: http://127.0.0.1:5000/)
 
+### RGB corresponding buttons
+
+`A`, `S`, `D` keys
+
 ### Spec
 ![](./image/stroop-effect-game-spec.jpg)
 
